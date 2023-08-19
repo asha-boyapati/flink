@@ -55,8 +55,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -480,6 +482,16 @@ public abstract class StateBackendMigrationTestBase<B extends StateBackend> exte
             // make sure that reading and writing each key state works with the new serializer
             backend.setCurrentKey(1);
             Iterator<Map.Entry<Integer, TestType>> iterable1 = mapState.iterator();
+
+            List<Map.Entry<Integer, TestType>> actualList =
+                    new ArrayList<Map.Entry<Integer, TestType>>(3);
+            actualList.add(iterable1.next());
+            actualList.add(iterable1.next());
+            actualList.add(iterable1.next());
+            // sort list because the order of elements returned by iterator is not deterministic
+            actualList.sort(Comparator.comparing(Map.Entry<Integer, TestType>::getKey));
+            iterable1 = actualList.iterator();
+
             Map.Entry<Integer, TestType> actual = iterable1.next();
             assertEquals((Integer) 1, actual.getKey());
             assertEquals(new TestType("key-1", 1), actual.getValue());
@@ -508,6 +520,13 @@ public abstract class StateBackendMigrationTestBase<B extends StateBackend> exte
 
             backend.setCurrentKey(3);
             Iterator<Map.Entry<Integer, TestType>> iterable3 = mapState.iterator();
+
+            actualList.clear();
+            actualList.add(iterable3.next());
+            actualList.add(iterable3.next());
+            // sort list because the order of elements returned by iterator is not deterministic
+            actualList.sort(Comparator.comparing(Map.Entry<Integer, TestType>::getKey));
+            iterable3 = actualList.iterator();
 
             actual = iterable3.next();
             assertEquals((Integer) 1, actual.getKey());
