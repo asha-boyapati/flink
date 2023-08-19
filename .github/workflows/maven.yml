@@ -8,7 +8,7 @@
 
 on:
   workflow_dispatch:
-    branches: [ "main", "fix-flaky" ]
+    branches: [ "main" ]
 
 jobs:
   build:
