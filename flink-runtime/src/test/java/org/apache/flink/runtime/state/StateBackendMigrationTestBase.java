@@ -437,6 +437,15 @@ public abstract class StateBackendMigrationTestBase<B extends StateBackend> {
         return set.iterator();
     }
 
+    private Iterator<Map.Entry<Integer, TestType>> sortedIterator(
+            Iterator<Map.Entry<Integer, TestType>> iterator) {
+        TreeSet<Map.Entry<Integer, TestType>> set =
+                new TreeSet<Map.Entry<Integer, TestType>>(
+                        Comparator.comparing(Map.Entry<Integer, TestType>::getKey));
+        iterator.forEachRemaining(set::add);
+        return set.iterator();
+    }
+
     private void testKeyedMapStateUpgrade(
             MapStateDescriptor<Integer, TestType> initialAccessDescriptor,
             MapStateDescriptor<Integer, TestType> newAccessDescriptorAfterRestore)
